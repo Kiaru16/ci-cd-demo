@@ -1,0 +1,51 @@
+name: CI Pipeline for 60 Points
+
+# 🎯 1. Налаштування тригерів push та pull_request
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 2. Налаштування кроку: checkout
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      # 3. Налаштування кроку: встановлення середовища (Node.js)
+      - name: Set up Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      # 4. Кешування залежностей (з кешем залежностей)
+      - name: Cache dependencies (npm)
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+            
+      # 5. Налаштування кроку: install
+      - name: Install dependencies
+        run: npm install
+        
+      # 6. Налаштування кроку: test (включаючи lint, якщо вбудований у скрипт)
+      - name: Run tests (and lint)
+        # Використовуємо --coverage, щоб згенерувати артефакт (звіт)
+        run: npm test -- --coverage
+        
+      # 7. Завантаження сформованих артефактів (звіту про покриття)
+      - name: Upload Coverage Report Artifact
+        # Цей крок вимагає наявності артефакту, який, ймовірно, генерується
+        # в папці coverage, якщо використовується стандартний jest/mocha.
+        uses: actions/upload-artifact@v4
+        if: always() # Завантажити незалежно від статусу тестів
+        with:
+          name: test-coverage-artifact
+          path: coverage/lcov.info # Стандартний шлях для звітів покриття
