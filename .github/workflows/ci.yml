@@ -1,4 +1,4 @@
-name: CI Pipeline for 60 Points (Fixed)
+name: CI Pipeline for 60 Points (Final)
 
 # 🎯 Налаштування тригерів push та pull_request
 on:
@@ -35,16 +35,16 @@ jobs:
       - name: Install dependencies
         run: npm install
         
-      # 5. Test: Запуск тестів (Виправлено: використовуємо npm run test для уникнення Permission denied)
-      # ПРИМІТКА: Для генерації звіту ваш скрипт "test" у package.json повинен містити --coverage.
-      - name: Run tests (and lint)
+      # 5. Test: Запуск тестів та генерація покриття
+      # ВИПРАВЛЕННЯ: Використання 'npm run test' вирішує проблему прав доступу (Permission denied).
+      - name: Run tests (and generate coverage)
         run: npm run test
         
       # 6. Upload Artifact: Завантаження звітів
-      # Цей крок є обов'язковим для 60 балів.
+      # Тепер файл coverage/lcov.info має бути згенерований.
       - name: Upload Coverage Report Artifact
         uses: actions/upload-artifact@v4
         if: always() # Завантажити незалежно від статусу тестів
         with:
           name: test-coverage-artifact
-          path: coverage/lcov.info # Шлях до звітів покриття
+          path: coverage/lcov.info
