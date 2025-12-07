@@ -35,8 +35,11 @@ jobs:
       - name: Install dependencies
         run: npm install
         
-      # 5. Test: Запуск тестів та генерація покриття
-      # ВИПРАВЛЕННЯ: Використовуємо npx jest --coverage для обходу помилки прав доступу (Exit Code 127).
+      # ⚠️ НОВИЙ КРОК: Примусове надання прав виконання для бінарників Jest/npx
+      - name: Ensure Jest is executable
+        run: chmod +x node_modules/.bin/jest
+        
+      # 5. Test: Запуск тестів та генерація покриття (залишаємо npx для надійності)
       - name: Run tests (with npx for reliability)
         run: npx jest --runInBand --coverage
         
