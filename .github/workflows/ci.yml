@@ -1,4 +1,4 @@
-name: CI Pipeline for 60 Points (Final)
+name: CI Pipeline for 60 Points (Finalized)
 
 # 🎯 Налаштування тригерів push та pull_request
 on:
@@ -36,9 +36,9 @@ jobs:
         run: npm install
         
       # 5. Test: Запуск тестів та генерація покриття
-      # ВИПРАВЛЕННЯ: Використання 'npm run test' вирішує проблему прав доступу (Permission denied).
-      - name: Run tests (and generate coverage)
-        run: npm run test
+      # ВИПРАВЛЕННЯ: Використовуємо npx jest --coverage для обходу помилки прав доступу (Exit Code 127).
+      - name: Run tests (with npx for reliability)
+        run: npx jest --runInBand --coverage
         
       # 6. Upload Artifact: Завантаження звітів
       # Тепер файл coverage/lcov.info має бути згенерований.
